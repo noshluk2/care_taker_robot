@@ -1,10 +1,3 @@
-/**
- * @file p1_a_single_straight_drive.cpp
- * @author Muhammad Luqman
- * @brief This ROS2 node continuously publishes Twist messages to a specified topic to make a turtle robot move in a straight line.
- * @organization Robotisim
- */
-
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
@@ -14,12 +7,14 @@ class TurtlesimStraightLine : public rclcpp::Node {
     TurtlesimStraightLine() : Node("turtlesim_straight_line") {
       // Set up a publisher and a timer
       cmd_vel_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/turtle1/cmd_vel", 10);
+      cmd_vel_pub2_ = this->create_publisher<geometry_msgs::msg::Twist>("/turtle2/cmd_vel", 10); 
       timer_ = this->create_wall_timer(std::chrono::milliseconds(100),
                                        std::bind(&TurtlesimStraightLine::timer_callback, this));
     }
 
   private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub2_;
     rclcpp::TimerBase::SharedPtr timer_;
 
     void timer_callback() {
@@ -28,7 +23,8 @@ class TurtlesimStraightLine : public rclcpp::Node {
       geometry_msgs::msg::Twist twist;
       twist.linear.x = -2;
       twist.angular.z = 1.57;
-      cmd_vel_pub_->publish(twist);
+      cmd_vel_pub_->publish(twist);      
+      cmd_vel_pub2_->publish(twist);
     }
 };
 
