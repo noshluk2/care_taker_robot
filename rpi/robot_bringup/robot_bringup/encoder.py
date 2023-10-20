@@ -33,6 +33,8 @@ while True:
     FRB = GPIO.input(frontright_b)
     FRcurrent_AB = (FRA << 1) | FRB
     position = (FRlast_AB << 2) | FRcurrent_AB
+    #print("FRcurrent and FRLast is " + str(FRcurrent_AB) + " - " + str(FRlast_AB))
+    print("FRPosition is " + str(outcome[position]))
     if((FRcounter - outcome[position]) > FRcounter):
                 print("Robot is Moving Forwards and the FR Counter is " + str(FRcounter))
     elif ((FRcounter - outcome[position]) < FRcounter):
