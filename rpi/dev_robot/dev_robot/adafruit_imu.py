@@ -7,12 +7,12 @@ i2c = board.I2C()  # uses board.SCL and board.SDA
 mpu = adafruit_mpu6050.MPU6050(i2c)
 
 while True:
-    #print("Acceleration: X:%.2f, Y: %.2f, Z: %.2f m/s^2" % (mpu.acceleration))
-    #print("Gyro X:%.2f, Y: %.2f, Z: %.2f rad/s" % (mpu.gyro))
+    print("Acceleration: X:%.2f, Y: %.2f, Z: %.2f m/s^2" % (mpu.acceleration))
+    print("Gyro X:%.2f, Y: %.2f, Z: %.2f rad/s" % (mpu.gyro))
     print("Temperature: %.2f C" % mpu.temperature)
     #print("")
     x_acc = ("%.2f,%.2f,%.2f" % (mpu.acceleration))
     #x_acc = "Acceleration: X:%.2f" % (mpu.acceleration)
-    print(mpu.acceleration)
-    print(x_acc)
+    #print(mpu.acceleration)
+    #print(x_acc)
     time.sleep(1)
