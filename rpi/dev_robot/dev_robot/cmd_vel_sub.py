@@ -108,7 +108,7 @@ class MinimalSubscriber(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-
+	print("cmd_sub Node started")
     minimal_subscriber = MinimalSubscriber()
 
     rclpy.spin(minimal_subscriber)
