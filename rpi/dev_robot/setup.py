@@ -27,6 +27,7 @@ setup(
                 'imu_pub = dev_robot.imu_publisher:main',
                 'encoder_pub = dev_robot.motor_encoders:main',
                 'odometery = dev_robot.odometery:main',
+                'image_pub = dev_robot.image_pub:main',
         ],
     },
 )

@@ -28,7 +28,7 @@ def main(args=None):
     publisher = video_publisher()
     print("Note Started")
     rclpy.spin(publisher)
-    minimal_publisher.destroy_node()
+    publisher.destroy_node()
     rclpy.shutdown()
 
 

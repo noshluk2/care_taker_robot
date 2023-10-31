@@ -1,6 +1,8 @@
 # care_taker_robot
 
-
+### Progress
+- Odometery while driving with cmd_vel
+- Mapping 
 ### Pin Connections 
 in4 = 17
 enb = 27

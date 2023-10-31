@@ -67,7 +67,7 @@ class EncoderPublisher(Node):
         elapsed_time = end_time - start_time
 
         # Print the encoder readings and the time taken to publish
-       # print(f"Encoder (Left/Right): {self.left_counter} / {self.right_counter}. Time taken: {elapsed_time:.6f} seconds")
+        print(f"Encoder (Left/Right): {self.left_counter} / {self.right_counter}. Time taken: {elapsed_time:.6f} seconds")
 
 
 

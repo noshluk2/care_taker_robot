@@ -1,125 +1,140 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
-import RPi.GPIO as GPIO
 from geometry_msgs.msg import Twist
+import RPi.GPIO as GPIO
+
+
+#back
 in4 = 17
-en1 = 27
+enb1 = 27
 in3 = 22
 in1 = 24
 in2 = 23
-en = 25
+ena1 = 25
+#front
+in2_4 = 9
+enb2 = 10
+in2_3 = 11
+in2_1 = 7
+in2_2 = 8
+ena2 = 26
 temp1=1
-angularz = 0
-linearx = 0
 
-GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(in1,GPIO.OUT)
 GPIO.setup(in2,GPIO.OUT)
 GPIO.setup(in3,GPIO.OUT)
 GPIO.setup(in4,GPIO.OUT)
-GPIO.setup(en,GPIO.OUT)
-GPIO.setup(en1,GPIO.OUT)
+GPIO.setup(ena1,GPIO.OUT)
+GPIO.setup(enb1,GPIO.OUT)
 GPIO.output(in1,GPIO.LOW)
 GPIO.output(in2,GPIO.LOW)
 GPIO.output(in3,GPIO.LOW)
 GPIO.output(in4,GPIO.LOW)
-p=GPIO.PWM(en,1000)
-q=GPIO.PWM(en1,1000)
+
+GPIO.setup(in2_1,GPIO.OUT)
+GPIO.setup(in2_2,GPIO.OUT)
+GPIO.setup(in2_3,GPIO.OUT)
+GPIO.setup(in2_4,GPIO.OUT)
+GPIO.setup(ena2,GPIO.OUT)
+GPIO.setup(enb2,GPIO.OUT)
+GPIO.output(in2_1,GPIO.LOW)
+GPIO.output(in2_2,GPIO.LOW)
+GPIO.output(in2_3,GPIO.LOW)
+GPIO.output(in2_4,GPIO.LOW)
+p=GPIO.PWM(ena1,1000)
+q=GPIO.PWM(enb1,1000)
+t=GPIO.PWM(ena2,1000)
+u=GPIO.PWM(enb2,1000)
+
 q.start(25)
 p.start(25)
-#p is left, q is right
+t.start(25)
+u.start(25)
 
-class MinimalSubscriber(Node):
+class FourWheelCmdVelSubscriber(Node):
 
     def __init__(self):
-        super().__init__('cmd_vel_subscriber')
+        super().__init__('four_wheel_cmd_vel_subscriber')
         self.subscription = self.create_subscription(
             Twist,
             'cmd_vel',
             self.listener_callback,
             10)
-        self.subscription  # prevent unused variable warning
-	
 
 
-   
     def listener_callback(self, msg):
-        #self.get_logger().info('"%s"' % msg.linear.x)
         linearx = msg.linear.x
         angularz = msg.angular.z
-       	if (linearx > 0 and angularz == 0 ):
-       		print("Forward: X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.HIGH)
-       		GPIO.output(in2,GPIO.LOW)
-       		GPIO.output(in3,GPIO.HIGH)
-       		GPIO.output(in4,GPIO.LOW)
-       	elif (linearx < 0 and angularz == 0 ):
-       		print("Backward: X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.LOW)
-       		GPIO.output(in2,GPIO.HIGH)
-       		GPIO.output(in3,GPIO.LOW)
-       		GPIO.output(in4,GPIO.HIGH)
-       	elif (linearx == 0 and angularz > 0 ):
-       		print("Turn Left X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.LOW)
-       		GPIO.output(in2,GPIO.HIGH)
-       		GPIO.output(in3,GPIO.HIGH)
-       		GPIO.output(in4,GPIO.LOW)
-       	elif (linearx == 0 and angularz < 0 ):
-       		print("Turn Right X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.HIGH)
-       		GPIO.output(in2,GPIO.LOW)
-       		GPIO.output(in3,GPIO.LOW)
-       		GPIO.output(in4,GPIO.HIGH)
-       	elif (linearx > 0 and angularz < 0 ):
-       		print("Move Forward, Tilt Right X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.HIGH)
-       		GPIO.output(in2,GPIO.LOW)
-       		GPIO.output(in3,GPIO.HIGH)
-       		GPIO.output(in4,GPIO.LOW)
-       		p.ChangeDutyCycle(50)
-        	q.ChangeDutyCycle(30)
-       	elif (linearx > 0 and angularz > 0 ):
-       		print("Move Forward, Tilt Left X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.HIGH)
-       		GPIO.output(in2,GPIO.LOW)
-       		GPIO.output(in3,GPIO.HIGH)
-       		GPIO.output(in4,GPIO.LOW)
-       		p.ChangeDutyCycle(30)
-        	q.ChangeDutyCycle(50)
-       	elif (linearx < 0 and angularz < 0 ):
-       		print("Move Backward, Tilt Left X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.LOW)
-       		GPIO.output(in2,GPIO.HIGH)
-       		GPIO.output(in3,GPIO.LOW)
-       		GPIO.output(in4,GPIO.HIGH)
-       		p.ChangeDutyCycle(30)
-        	q.ChangeDutyCycle(50)
-       	elif (linearx < 0 and angularz > 0 ):
-       		print("Move Backward, Tilt Right X="+ str(linearx) + "Z=" + str(angularz))
-       		GPIO.output(in1,GPIO.LOW)
-       		GPIO.output(in2,GPIO.HIGH)
-       		GPIO.output(in3,GPIO.LOW)
-       		GPIO.output(in4,GPIO.HIGH)
-       		p.ChangeDutyCycle(50)
-        	q.ChangeDutyCycle(30)
+
+        if linearx > 0:  # Forward
+            self.move_forward()
+        elif linearx < 0:  # Backward
+            self.move_backward()
+        elif angularz > 0:  # Turn Left
+            self.turn_left()
+        elif angularz < 0:  # Turn Right
+            self.turn_right()
+        else:  # Stop
+            self.stop_motors()
+
+    def move_forward(self):
+        GPIO.output(in1, GPIO.HIGH)
+        GPIO.output(in2, GPIO.LOW)
+        GPIO.output(in3, GPIO.HIGH)
+        GPIO.output(in4, GPIO.LOW)
+        GPIO.output(in2_1, GPIO.HIGH)
+        GPIO.output(in2_2, GPIO.LOW)
+        GPIO.output(in2_3, GPIO.HIGH)
+        GPIO.output(in2_4, GPIO.LOW)
+
+    def move_backward(self):
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.HIGH)
+        GPIO.output(in3, GPIO.LOW)
+        GPIO.output(in4, GPIO.HIGH)
+        GPIO.output(in2_1, GPIO.LOW)
+        GPIO.output(in2_2, GPIO.HIGH)
+        GPIO.output(in2_3, GPIO.LOW)
+        GPIO.output(in2_4, GPIO.HIGH)
+
+    def turn_left(self):
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.LOW)
+        GPIO.output(in3, GPIO.HIGH)
+        GPIO.output(in4, GPIO.LOW)
+        GPIO.output(in2_1, GPIO.LOW)
+        GPIO.output(in2_2, GPIO.LOW)
+        GPIO.output(in2_3, GPIO.HIGH)
+        GPIO.output(in2_4, GPIO.LOW)
+
+    def turn_right(self):
+        GPIO.output(in1, GPIO.HIGH)
+        GPIO.output(in2, GPIO.LOW)
+        GPIO.output(in3, GPIO.LOW)
+        GPIO.output(in4, GPIO.LOW)
+        GPIO.output(in2_1, GPIO.HIGH)
+        GPIO.output(in2_2, GPIO.LOW)
+        GPIO.output(in2_3, GPIO.LOW)
+        GPIO.output(in2_4, GPIO.LOW)
+
+    def stop_motors(self):
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.LOW)
+        GPIO.output(in3, GPIO.LOW)
+        GPIO.output(in4, GPIO.LOW)
+        GPIO.output(in2_1, GPIO.LOW)
+        GPIO.output(in2_2, GPIO.LOW)
+        GPIO.output(in2_3, GPIO.LOW)
+        GPIO.output(in2_4, GPIO.LOW)
 
 def main(args=None):
     rclpy.init(args=args)
-	print("cmd_sub Node started")
-    minimal_subscriber = MinimalSubscriber()
-
-    rclpy.spin(minimal_subscriber)
-
-    	
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    minimal_subscriber.destroy_node()
+    cmd_vel_subscriber = FourWheelCmdVelSubscriber()
+    rclpy.spin(cmd_vel_subscriber)
+    cmd_vel_subscriber.destroy_node()
+    GPIO.cleanup()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
