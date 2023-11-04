@@ -3,6 +3,16 @@
 ### Progress
 - Odometery while driving with cmd_vel
 - Mapping 
+
+
+### Packages
+- 
+
+
+### Commands for permissions
+- sudo chown robot /dev/gpiomem and sudo chmod g+rw /dev/gpiomem for gpio pins access
+
+
 ### Pin Connections 
 in4 = 17
 enb = 27
