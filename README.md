@@ -2,18 +2,16 @@
 
 ### Progress
 - Odometery while driving with cmd_vel
-- Mapping 
+- Mapping
 
 
 ### Packages
-- 
-
-
+-
 ### Commands for permissions
 - sudo chown robot /dev/gpiomem and sudo chmod g+rw /dev/gpiomem for gpio pins access
 
 
-### Pin Connections 
+### Pin Connections
 in4 = 17
 enb = 27
 in3 = 22
@@ -33,7 +31,3 @@ backright_black = gpio 20
 imu:
 gpio 2
 gpio 3
-
-### People Counting 
-- https://github.com/saimj7/People-Counting-in-Real-Time
-- people_counter.py modified
