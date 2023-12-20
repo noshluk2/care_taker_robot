@@ -19,5 +19,5 @@ backright_red = gpio 16
 backright_black = gpio 20
 
 imu:
-gpio 2
-gpio 3
+gpio 2(yellow),
+gpio 3(brown)
