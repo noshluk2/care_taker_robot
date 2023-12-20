@@ -40,8 +40,7 @@ GPIO.output(in2_3,GPIO.HIGH) #left, forward
 GPIO.output(in2_4,GPIO.LOW)
 
 imu:
-gpio 2
-gpio 3
+imu: gpio 2(yellow), gpio 3(brown)
 
 ### People Counting 
 - https://github.com/saimj7/People-Counting-in-Real-Time
