@@ -26,17 +26,18 @@ def generate_launch_description():
         #     arguments=['-d', [os.path.join(pkg_dir, 'config', 'config_file.rviz')]]
         # )
 
+        # Node(
+        #     package='slambot',
+        #     executable='p7_a_drive_control.py',
+        #     name='encoder_parser',
+        # ),
+
         Node(
             package='slambot',
             executable='p7_c_odom.py',
             name='odom_generator',
         ),
 
-        Node(
-            package='slambot',
-            executable='p7_a_enc_read.py',
-            name='encoder_parser',
-        ),
 
                 # static transform for laser
         Node(
