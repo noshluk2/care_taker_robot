@@ -10,7 +10,7 @@
 
 
 ### Commands for permissions
-- sudo chown robot /dev/gpiomem and sudo chmod g+rw /dev/gpiomem for gpio pins access
+- sudo chown robot /dev/gpiomem and && chmod g+rw /dev/gpiomem for gpio pins access
 
 
 ### Pin Connections 
